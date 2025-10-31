@@ -13,7 +13,7 @@ function parseTweets(runkeeper_tweets) {
 	//It works correctly, your task is to update the text of the other tags in the HTML file!
 	document.getElementById('numberTweets').innerText = tweet_array.length;
 
-	// --- Get the earliest and latest dates ---
+	// Get the earliest and latest dates
     const times = tweet_array.map(t => t.time);
     const earliest = new Date(Math.min(...times));
     const latest = new Date(Math.max(...times));
@@ -22,6 +22,32 @@ function parseTweets(runkeeper_tweets) {
 
     document.getElementById('firstDate').innerText = earliest.toLocaleDateString('en-US', options);
     document.getElementById('lastDate').innerText = latest.toLocaleDateString('en-US', options);
+
+	// 4 categories of tweets
+	const categories = {
+		completed_event: 0,
+		live_event: 0,
+		achievement: 0,
+		miscellaneous: 0
+	};
+
+	tweet_array.forEach(t => categories[t.source]++);
+
+	const total = tweet_array.length;
+	const percent = x => math.format((x / total) * 100, {notation: 'fixed', precision: 2});
+
+	// Update DOM
+	document.querySelector('.completedEvents').innerText = categories.completed_event;
+	document.querySelector('.completedEventsPct').innerText = percent(categories.completed_event) + '%';
+
+	document.querySelector('.liveEvents').innerText = categories.live_event;
+	document.querySelector('.liveEventsPct').innerText = percent(categories.live_event) + '%';
+
+	document.querySelector('.achievements').innerText = categories.achievement;
+	document.querySelector('.achievementsPct').innerText = percent(categories.achievement) + '%';
+
+	document.querySelector('.miscellaneous').innerText = categories.miscellaneous;
+	document.querySelector('.miscellaneousPct').innerText = percent(categories.miscellaneous) + '%';
 }
 
 //Wait for the DOM to load
