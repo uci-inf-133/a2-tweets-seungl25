@@ -31,12 +31,27 @@ class Tweet {
         } else {
             return "miscellaneous";
         }
-}
+    }
 
     //returns a boolean, whether the text includes any content written by the person tweeting.
-    get written():boolean {
-        //TODO: identify whether the tweet is written
-        return false;
+    get written(): boolean {
+        if (this.source !== "completed_event") return false;
+        // Non-manual tweets usually end before the runkeeper url, so if
+        // the tweet has more than the basic structure, it's likely written by a human
+        const textLower = this.text.toLowerCase();
+
+        // check for the default-generated link text
+        const linkIndex = textLower.indexOf("https://t.co/");
+        if (linkIndex === -1) return false;
+
+        // extract the text that is before the link
+        const beforeLink = textLower.substring(0, linkIndex).trim();
+
+        // Auto text patterns usually end with the phrases "check it out!" or "#runkeeper"
+        if (beforeLink.includes("check it out") || beforeLink.endsWith("#runkeeper")) {
+            return false;
+        }
+        return true;
     }
 
     get writtenText():string {

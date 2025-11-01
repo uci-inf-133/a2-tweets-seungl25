@@ -48,6 +48,21 @@ function parseTweets(runkeeper_tweets) {
 
 	document.querySelector('.miscellaneous').innerText = categories.miscellaneous;
 	document.querySelector('.miscellaneousPct').innerText = percent(categories.miscellaneous) + '%';
+
+	// ensure that the 2nd .completedEvents span show the accurate value and not '???'
+	document.querySelectorAll('.completedEvents').forEach(e => {
+    e.innerText = categories.completed_event;});
+
+	// Displays number of completed events and what % was user-written
+	const completedTweets = tweet_array.filter(t => t.source === 'completed_event');
+	const writtenTweets = completedTweets.filter(t => t.written);
+
+	document.querySelector('.written').innerText = writtenTweets.length;
+	document.querySelector('.writtenPct').innerText =
+	math.format((writtenTweets.length / completedTweets.length) * 100, {
+		notation: 'fixed',
+		precision: 2
+	}) + '%';
 }
 
 //Wait for the DOM to load
