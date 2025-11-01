@@ -36,7 +36,7 @@ class Tweet {
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written(): boolean {
         if (this.source !== "completed_event") return false;
-        // Non-manual tweets usually end before the runkeeper url, so if
+        // non-manual tweets usually end before the runkeeper url, so if
         // the tweet has more than the basic structure, it's likely written by a human
         const textLower = this.text.toLowerCase();
 
@@ -47,19 +47,31 @@ class Tweet {
         // extract the text that is before the link
         const beforeLink = textLower.substring(0, linkIndex).trim();
 
-        // Auto text patterns usually end with the phrases "check it out!" or "#runkeeper"
+        // autotext patterns usually end with the phrases "check it out!" or "#runkeeper"
         if (beforeLink.includes("check it out") || beforeLink.endsWith("#runkeeper")) {
             return false;
         }
         return true;
     }
 
-    get writtenText():string {
-        if(!this.written) {
-            return "";
-        }
-        //TODO: parse the written text from the tweet
-        return "";
+    get writtenText(): string {
+        if (!this.written) return "";
+
+        const textLower = this.text;
+        const urlIndex = textLower.indexOf("https://t.co/");
+        if (urlIndex === -1) return "";
+
+        // extract everything before the link
+        const beforeLink = textLower.substring(0, urlIndex);
+
+        // find the dash or phrase that starts the user text
+        const dashIndex = beforeLink.indexOf(" - ");
+        if (dashIndex !== -1) {
+            return beforeLink.substring(dashIndex + 3).trim();
+    }
+
+        // if no dash, just return the last portion before the link
+        return beforeLink.split(/#runkeeper/i)[0].trim();
     }
 
     get activityType(): string {
@@ -93,8 +105,19 @@ class Tweet {
         return unit === "km" ? value / 1.609 : value;
     }
 
-    getHTMLTableRow(rowNumber:number):string {
-        //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
-        return "<tr></tr>";
+    getHTMLTableRow(rowNumber: number): string {
+        const urlMatch = this.text.match(/https:\/\/t\.co\/[A-Za-z0-9]+/);
+        const url = urlMatch ? urlMatch[0] : "#";
+
+        return (
+            "<tr>" +
+                "<td>" + rowNumber + "</td>" +
+                "<td>" + this.activityType + "</td>" +
+                "<td>" + this.writtenText + "</td>" +
+                "<td><a href='" + url + "' target='_blank'>View</a></td>" +
+            "</tr>"
+        );
     }
+
+
 }
