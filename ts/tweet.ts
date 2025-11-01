@@ -62,20 +62,35 @@ class Tweet {
         return "";
     }
 
-    get activityType():string {
-        if (this.source != 'completed_event') {
-            return "unknown";
+    get activityType(): string {
+        if (this.source !== 'completed_event') return "unknown";
+
+        const textLower = this.text.toLowerCase();
+
+        // activity keywords that I found in saved_tweets.json
+        const activities = ["run", "walk", "bike", "hike", "swim", "row", "ski", "elliptical"];
+        for (const act of activities) {
+            if (textLower.includes(` ${act}`) || textLower.endsWith(act) || textLower.startsWith(act)) {
+                return act;
+         }
         }
-        //TODO: parse the activity type from the text of the tweet
-        return "";
+        // if not a part of the words in 'activities', categorize it as 'other'
+        // 'other' encapsulates things like yoga, strength training, meditation that people tweeted out
+    return "other";
     }
 
-    get distance():number {
-        if(this.source != 'completed_event') {
-            return 0;
-        }
-        //TODO: prase the distance from the text of the tweet
-        return 0;
+    get distance(): number {
+        if (this.source !== 'completed_event') return 0;
+
+        // match number and original unit (km or mi)
+        const match = this.text.match(/(\d+(\.\d+)?)\s*(mi|km)/i);
+        if (!match) return 0;
+
+        const value = parseFloat(match[1]);
+        const unit = match[3].toLowerCase();
+
+        // convert all km values to mi values
+        return unit === "km" ? value / 1.609 : value;
     }
 
     getHTMLTableRow(rowNumber:number):string {
