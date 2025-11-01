@@ -5,7 +5,9 @@
 10/10
 - 3/3 Summarizing tweets
 - 4/4 Identifying the most popular activities
-- 3/3 Adding a text earch interface
+- 3/3 Adding a text search interface
+- 0/1 Bonus Feature
+
 
 2. How long, in hours, did it take you to complete this assignment?
 - It took me about 17 hours to finish the assignment.
@@ -15,6 +17,7 @@
 - I used Weijin's javascript demo (https://inf133.netlify.app/javascript-tutorial.html)
 - From the A2 page, I was able to find basics for vega-lite: https://vega.github.io/vega-lite/tutorials/getting_started.html
 - I looked up how to install nvm/npm for my Windows desktop on YouTube: https://www.youtube.com/watch?v=D53lAvrio0E
+
 
 4. What classmates or other individuals did you consult as part of this assignment? What did you discuss?
 - I didn't talk to any classmates or other individuals.
